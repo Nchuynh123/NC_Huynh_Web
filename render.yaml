@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: nc-huynh-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @band/shared && npm run db:generate -w server && npm run build -w server
+    startCommand: npm run db:push -w server && npm run start -w server
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: PUBLIC_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SiteSettings {
+  id           String   @id @default("default")
+  bandName     String   @default("NC Huynh Band")
+  tagline      String?
+  about        String?  @db.Text
+  logoUrl      String?
+  heroImageUrl String?
+  socialLinks  Json?
+  updatedAt    DateTime @updatedAt
+}
+
+model Member {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  bio       String?  @db.Text
+  photoUrl  String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Album {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  type        String
+  releaseDate DateTime?
+  coverUrl    String?
+  description String?   @db.Text
+  spotifyUrl  String?
+  youtubeUrl  String?
+  isPublished Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  tracks      Track[]
+}
+
+model Track {
+  id       String @id @default(uuid())
+  albumId  String
+  album    Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  title    String
+  duration String?
+  trackNo  Int
+  audioUrl String?
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  venue       String
+  city        String
+  eventDate   DateTime
+  imageUrl    String?
+  ticketUrl   String?
+  isPast      Boolean  @default(false)
+  isPublished Boolean  @default(true)
+}
+
+model GalleryItem {
+  id        String  @id @default(uuid())
+  type      String
+  url       String
+  thumbnail String?
+  caption   String?
+  sortOrder Int     @default(0)
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String?
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false)
+}

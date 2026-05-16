@@ -1,0 +1,22 @@
+{
+  "name": "nc-huynh-band",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web,admin -c blue,green,magenta \"npm run dev -w server\" \"npm run dev -w @band/web\" \"npm run dev -w @band/admin\"",
+    "dev:server": "npm run dev -w server",
+    "dev:web": "npm run dev -w @band/web",
+    "dev:admin": "npm run dev -w @band/admin",
+    "build": "npm run build -w @band/shared && npm run build -w server && npm run build -w @band/web && npm run build -w @band/admin",
+    "db:generate": "npm run db:generate -w server",
+    "db:push": "npm run db:push -w server",
+    "db:seed": "npm run db:seed -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

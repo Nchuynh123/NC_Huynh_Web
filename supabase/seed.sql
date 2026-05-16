@@ -1,0 +1,2 @@
+-- Chạy trên Supabase SQL Editor khi deploy production
+-- Tạo bucket: band-assets (public)
