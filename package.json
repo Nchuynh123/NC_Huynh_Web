@@ -12,6 +12,7 @@
     "dev:web": "npm run dev -w @band/web",
     "dev:admin": "npm run dev -w @band/admin",
     "build": "npm run build -w @band/shared && npm run build -w server && npm run build -w @band/web && npm run build -w @band/admin",
+    "build:server": "npm run build -w @band/shared && npm run build -w server",
     "db:generate": "npm run db:generate -w server",
     "db:push": "npm run db:push -w server",
     "db:seed": "npm run db:seed -w server"
