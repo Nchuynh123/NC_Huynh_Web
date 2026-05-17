@@ -76,27 +76,10 @@ const getYouTubeEmbedUrl = (youtubeUrl?: string) => {
   return fallback;
 };
 
-const brandGlow = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(var(--active-color-rgb), 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(var(--active-color-rgb), 0); }
-  100% { box-shadow: 0 0 0 0 rgba(var(--active-color-rgb), 0); }
-`;
-
 const floatAnimation = keyframes`
   0% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-12px) rotate(4deg); }
   100% { transform: translateY(0px) rotate(0deg); }
-`;
-
-const barBounce = keyframes`
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
-`;
-
-const buttonShine = keyframes`
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
 `;
 
 type Platform = 'spotify' | 'apple' | 'youtube';
@@ -142,48 +125,6 @@ export function MusicPage() {
         return spotifyEmbedUrl;
     }
   };
-
-  const getDirectUrl = () => {
-    switch (platform) {
-      case 'apple': return rawAppleMusicUrl;
-      case 'youtube': return rawYouTubeUrl;
-      case 'spotify':
-      default:
-        return rawSpotifyUrl;
-    }
-  };
-
-  const getPromoText = () => {
-    switch (platform) {
-      case 'apple':
-        return {
-          subtitle: 'APPLE MUSIC',
-          title: 'Nghe nhạc chất lượng cao trên Apple Music',
-          description: 'Thưởng thức các ca khúc hit chất lượng âm thanh Lossless và Dolby Atmos của chúng tôi trực tiếp từ Apple Music. Đăng ký kênh để cập nhật nhanh nhất các sáng tác mới!',
-          btnText: 'Mở trong ứng dụng Apple Music',
-          icon: <AppleMusicIcon />
-        };
-      case 'youtube':
-        return {
-          subtitle: 'YOUTUBE',
-          title: 'Xem MV & nghe nhạc trên YouTube ',
-          description: 'Xem các video âm nhạc chính thức, sân khấu trình diễn live và danh sách phát nhạc chất lượng cao trên YouTube Music. Đừng quên bấm Subscribe kênh của chúng tôi nhé!',
-          btnText: 'Mở trong ứng dụng YouTube',
-          icon: <YouTubeIcon />
-        };
-      case 'spotify':
-      default:
-        return {
-          subtitle: 'SPOTIFY PLAYER',
-          title: 'Nghe nhạc trực tuyến trên Spotify',
-          description: 'Thưởng thức các ca khúc hit, danh sách phát và các sản phẩm âm nhạc chất lượng cao của chúng tôi trực tiếp từ Spotify. Đừng quên bấm nút Follow để cập nhật nhanh nhất!',
-          btnText: 'Mở trong ứng dụng Spotify',
-          icon: <SpotifyIcon />
-        };
-    }
-  };
-
-  const promo = getPromoText();
 
   return (
     <Box sx={{ pb: 10 }}>

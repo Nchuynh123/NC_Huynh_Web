@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
   AppBar,
@@ -12,7 +12,6 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-  keyframes,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
@@ -28,7 +27,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
-import { fetchSettings, fetchAlbums } from '../api/client';
+import { fetchSettings } from '../api/client';
 import { Footer } from './Footer';
 import ThemeToggle from './ThemeToggle';
 
@@ -49,7 +48,6 @@ export function Layout() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: fetchSettings });
-  const { data: albums } = useQuery({ queryKey: ['albums'], queryFn: fetchAlbums });
 
   // Dynamically update browser tab favicon based on custom site settings logo
   useEffect(() => {

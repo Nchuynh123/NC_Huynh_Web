@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography, keyframes, useTheme, useMediaQuery, IconButton } from '@mui/material';
+import { Box, Container, Stack, Typography, keyframes, useTheme, useMediaQuery, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';

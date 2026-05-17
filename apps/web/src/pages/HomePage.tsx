@@ -19,7 +19,7 @@ export function HomePage() {
       <AboutSection aboutText={settings?.about ?? undefined} />
 
       {/* Featured Music Section */}
-      <FeaturedMusicSection isLoading={isLoadingAlbums} />
+      <FeaturedMusicSection albums={albums ?? []} isLoading={isLoadingAlbums} />
 
       {/* Featured Events Section */}
       <FeaturedEventsSection events={events ?? []} isLoading={isLoadingEvents} />
