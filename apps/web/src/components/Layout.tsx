@@ -32,11 +32,6 @@ import { fetchSettings, fetchAlbums } from '../api/client';
 import { Footer } from './Footer';
 import ThemeToggle from './ThemeToggle';
 
-const visualizerBounce = keyframes`
-  0%, 100% { height: 4px; }
-  50% { height: 16px; }
-`;
-
 const nav = [
   { label: 'Trang chủ', path: '/' },
   { label: 'Giới thiệu', path: '/about' },
@@ -70,94 +65,6 @@ export function Layout() {
     }
   }, [settings]);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  // Initial ambient soundtrack setup with autoplay on first interaction
-  useEffect(() => {
-    const defaultUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3';
-    const audio = new Audio(defaultUrl);
-    audio.loop = true;
-    audio.volume = 0.25;
-    audio.muted = true; // Start muted to bypass browser autoplay blocks completely!
-    audioRef.current = audio;
-
-    // Start playing immediately (always succeeds because the audio is muted!)
-    audio.play()
-      .then(() => {
-        setIsPlaying(true);
-      })
-      .catch((err) => {
-        console.log("Muted autoplay blocked:", err);
-      });
-
-    // Unmute as soon as the user interacts with the page
-    const unmuteOnInteraction = () => {
-      if (audioRef.current) {
-        audioRef.current.muted = false;
-        audioRef.current.volume = 0.25;
-        // Double check it's playing
-        if (audioRef.current.paused && isPlaying) {
-          audioRef.current.play().catch(err => console.log("Failed to play on interaction:", err));
-        }
-        cleanupListeners();
-      }
-    };
-
-    const cleanupListeners = () => {
-      document.removeEventListener('click', unmuteOnInteraction);
-      document.removeEventListener('touchstart', unmuteOnInteraction);
-      document.removeEventListener('scroll', unmuteOnInteraction);
-    };
-
-    document.addEventListener('click', unmuteOnInteraction);
-    document.addEventListener('touchstart', unmuteOnInteraction);
-    document.addEventListener('scroll', unmuteOnInteraction);
-
-    return () => {
-      cleanupListeners();
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  // Sync background music URL with the first custom track having a valid audioUrl
-  useEffect(() => {
-    if (!albums || !audioRef.current) return;
-
-    let customUrl = '';
-    for (const album of albums) {
-      if (album.tracks) {
-        const trackWithAudio = album.tracks.find(t => t.audioUrl);
-        if (trackWithAudio && trackWithAudio.audioUrl) {
-          customUrl = trackWithAudio.audioUrl;
-          break;
-        }
-      }
-    }
-
-    if (customUrl && audioRef.current.src !== customUrl) {
-      const wasPlaying = isPlaying;
-      audioRef.current.src = customUrl;
-      if (wasPlaying) {
-        audioRef.current.play().catch(err => console.log("Failed to resume custom track:", err));
-      }
-    }
-  }, [albums]);
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch(err => console.log("Failed to play soundtrack:", err));
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -416,58 +323,6 @@ export function Layout() {
           )}
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            {/* Beautiful Bouncing Audio Visualizer Button */}
-            <IconButton
-              onClick={togglePlay}
-              size="small"
-              sx={{
-                color: isPlaying ? 'primary.main' : 'text.secondary',
-                bgcolor: isPlaying ? 'rgba(255,45,85,0.06)' : 'transparent',
-                border: '1px solid',
-                borderColor: isPlaying ? 'rgba(255,45,85,0.15)' : 'rgba(255,255,255,0.08)',
-                borderRadius: '50%',
-                p: 1,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  bgcolor: isPlaying ? 'rgba(255,45,85,0.12)' : 'rgba(255,255,255,0.05)',
-                  transform: 'scale(1.05)',
-                }
-              }}
-              title={isPlaying ? "Tắt nhạc nền" : "Bật nhạc nền"}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: 16, width: 16 }}>
-                <Box
-                  sx={{
-                    width: 3,
-                    bgcolor: 'currentcolor',
-                    borderRadius: '2px',
-                    height: isPlaying ? '100%' : '4px',
-                    animation: isPlaying ? `${visualizerBounce} 0.8s ease-in-out infinite` : 'none',
-                  }}
-                />
-                <Box
-                  sx={{
-                    width: 3,
-                    bgcolor: 'currentcolor',
-                    borderRadius: '2px',
-                    height: isPlaying ? '100%' : '6px',
-                    animation: isPlaying ? `${visualizerBounce} 0.5s ease-in-out infinite` : 'none',
-                    animationDelay: '0.15s',
-                  }}
-                />
-                <Box
-                  sx={{
-                    width: 3,
-                    bgcolor: 'currentcolor',
-                    borderRadius: '2px',
-                    height: isPlaying ? '100%' : '3px',
-                    animation: isPlaying ? `${visualizerBounce} 0.7s ease-in-out infinite` : 'none',
-                    animationDelay: '0.3s',
-                  }}
-                />
-              </Box>
-            </IconButton>
-
             {!mobile && (
               <Box sx={{ width: 45, display: 'flex', justifyContent: 'flex-end' }}>
                 <ThemeToggle />

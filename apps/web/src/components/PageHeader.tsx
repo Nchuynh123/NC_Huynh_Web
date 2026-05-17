@@ -1,4 +1,6 @@
-import { Box, Container, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import { Helmet } from 'react-helmet-async';
 
 export function PageHeader({ title, subtitle }: { title: string; subtitle?: string }) {

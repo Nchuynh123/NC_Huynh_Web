@@ -1,4 +1,7 @@
-import { Box, Paper, Typography, CardActionArea } from '@mui/material';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import CardActionArea from '@mui/material/CardActionArea';
 import { Link } from 'react-router-dom';
 import type { Member } from '@band/shared';
 import { slugify } from '@band/shared';

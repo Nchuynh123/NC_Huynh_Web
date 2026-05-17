@@ -1,4 +1,7 @@
-import { Box, Paper, Typography, Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import type { GalleryItem } from '@band/shared';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 

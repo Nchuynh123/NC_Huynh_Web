@@ -1,8 +1,13 @@
-import { Box, Paper, Typography, Chip, CardActionArea } from '@mui/material';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import CardActionArea from '@mui/material/CardActionArea';
 import { Link } from 'react-router-dom';
 import type { Album } from '@band/shared';
-
 import { useTheme } from '@mui/material/styles';
+import { useQuery } from '@tanstack/react-query';
+import { fetchSettings } from '../api/client';
 
 export function AlbumCard({ album }: { album: Album }) {
   const theme = useTheme();
@@ -133,6 +138,63 @@ export function AlbumCard({ album }: { album: Album }) {
           </Box>
         </Box>
       </CardActionArea>
+    </Paper>
+  );
+}
+
+const getSpotifyEmbedUrl = (spotifyUrl?: string) => {
+  if (!spotifyUrl) return 'https://open.spotify.com/embed/artist/4BhKugGyGZ4PZKdsr5TvSA';
+  if (spotifyUrl.includes('/embed/')) return spotifyUrl;
+  if (spotifyUrl.includes('open.spotify.com/')) {
+    return spotifyUrl.replace('open.spotify.com/', 'open.spotify.com/embed/');
+  }
+  if (spotifyUrl.startsWith('spotify:')) {
+    const parts = spotifyUrl.split(':');
+    if (parts.length >= 3) {
+      return `https://open.spotify.com/embed/${parts[1]}/${parts[2]}`;
+    }
+  }
+  return spotifyUrl;
+};
+
+export function SpotifyPromoCard() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+  const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: fetchSettings });
+
+  const rawSpotifyUrl = (settings?.socialLinks as any)?.spotify || 'https://open.spotify.com/artist/4BhKugGyGZ4PZKdsr5TvSA';
+  const spotifyEmbedUrl = getSpotifyEmbedUrl(rawSpotifyUrl);
+
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        height: 280,
+        borderRadius: 5,
+        overflow: 'hidden',
+        bgcolor: 'rgba(0,0,0,0.3)',
+        border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
+        boxShadow: isDark
+          ? '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)'
+          : '0 10px 30px rgba(0,0,0,0.03)',
+        transition: 'all 0.3s ease',
+        position: 'relative',
+        display: 'flex',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: isDark ? '0 15px 40px rgba(0,0,0,0.6)' : '0 15px 30px rgba(0,0,0,0.08)'
+        }
+      }}
+    >
+      <iframe
+        style={{ borderRadius: '20px', border: 0 }}
+        src={`${spotifyEmbedUrl}?utm_source=generator&theme=${isDark ? '0' : '1'}`}
+        width="100%"
+        height="100%"
+        allowFullScreen
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      />
     </Paper>
   );
 }

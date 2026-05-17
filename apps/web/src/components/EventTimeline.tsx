@@ -1,4 +1,10 @@
-import { Box, Button, Paper, Chip, Stack, Typography, Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import EventIcon from '@mui/icons-material/Event';
 import PlaceIcon from '@mui/icons-material/Place';
 import type { Event } from '@band/shared';

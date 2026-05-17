@@ -1,4 +1,6 @@
-import { Box, Typography, Stack } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 import type { Track } from '@band/shared';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
