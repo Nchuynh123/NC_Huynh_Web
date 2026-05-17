@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  base: mode === 'production' ? '/admin/' : '/',
   server: {
     port: 5174,
     proxy: {
@@ -10,4 +11,5 @@ export default defineConfig({
       '/uploads': { target: 'http://localhost:3001', changeOrigin: true },
     },
   },
-});
+}));
+
