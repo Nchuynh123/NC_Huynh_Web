@@ -17,7 +17,7 @@ router.get('/settings', async (_req, res, next) => {
     let settings = await prisma.siteSettings.findUnique({ where: { id: 'default' } });
     if (!settings) {
       settings = await prisma.siteSettings.create({
-        data: { id: 'default', bandName: 'NC Huynh Band' },
+        data: { id: 'default', bandName: 'NC Huynh' },
       });
     }
     res.json(serializeSettings(settings));

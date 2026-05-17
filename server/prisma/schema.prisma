@@ -9,7 +9,7 @@ datasource db {
 
 model SiteSettings {
   id           String   @id @default("default")
-  bandName     String   @default("NC Huynh Band")
+  bandName     String   @default("NC Huynh")
   tagline      String?
   about        String?  @db.Text
   logoUrl      String?

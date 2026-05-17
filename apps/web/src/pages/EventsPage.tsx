@@ -1,4 +1,9 @@
-import { Container, Grid, Box, Typography, Divider, useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../api/client';
 import { EventTimeline } from '../components/EventTimeline';

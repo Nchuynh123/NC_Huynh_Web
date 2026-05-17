@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 import { MembersPage } from './pages/MembersPage';
+import { MemberDetailPage } from './pages/MemberDetailPage';
 import { MusicPage } from './pages/MusicPage';
 import { AlbumDetailPage } from './pages/AlbumDetailPage';
 import { EventsPage } from './pages/EventsPage';
@@ -16,6 +17,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="members" element={<MembersPage />} />
+        <Route path="members/:slug" element={<MemberDetailPage />} />
         <Route path="music" element={<MusicPage />} />
         <Route path="music/:slug" element={<AlbumDetailPage />} />
         <Route path="events" element={<EventsPage />} />

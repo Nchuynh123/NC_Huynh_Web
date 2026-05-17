@@ -1,5 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
-import { Box, Button, Container, Skeleton, Stack, Typography, Grid, Paper, Divider, IconButton, useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAlbum } from '../api/client';
 import { TrackList } from '../components/TrackList';
@@ -141,77 +151,163 @@ export function AlbumDetailPage() {
                           Sản phẩm
                         </Typography>
                         <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 600 }}>
-                          {album.tracks?.length ?? 0} bài hát
+                          {album.type === 'SINGLE' ? '1 bài hát' : `${album.tracks?.length ?? 0} bài hát`}
                         </Typography>
                       </Box>
                     </Box>
                   </Stack>
 
-                  <Box sx={{ mb: 4 }}>
-                    <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 1.5 }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 800, fontFamily: '"Outfit", "Inter", sans-serif', color: 'text.primary' }}>
-                        Tracklist
-                      </Typography>
-                      <Divider sx={{ flexGrow: 1, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }} />
-                    </Stack>
-                    <Box sx={{
-                      maxHeight: 300,
-                      overflowY: 'auto',
-                      pr: 1,
-                      '&::-webkit-scrollbar': { width: '4px' },
-                      '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
-                      '&::-webkit-scrollbar-thumb': { bgcolor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderRadius: 2 }
-                    }}>
-                      <TrackList tracks={album.tracks ?? []} />
-                    </Box>
-                  </Box>
-
-                  <Stack direction="row" spacing={2}>
-                    {(album as any).spotifyUrl && (
-                      <Button
-                        href={(album as any).spotifyUrl}
-                        target="_blank"
-                        rel="noopener"
-                        variant="contained"
-                        size="large"
-                        startIcon={<PlayArrowIcon />}
+                  {album.type === 'SINGLE' ? (
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 3.5,
+                        borderRadius: 4,
+                        bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)',
+                        border: '1px dashed',
+                        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                        mt: 4
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
                         sx={{
-                          borderRadius: '12px',
-                          px: 4,
-                          py: 1.5,
-                          fontWeight: 700,
-                          textTransform: 'none',
-                          bgcolor: '#1DB954',
-                          boxShadow: '0 8px 20px rgba(29, 185, 84, 0.3)',
-                          '&:hover': { bgcolor: '#1ed760', boxShadow: '0 10px 25px rgba(29, 185, 84, 0.4)' }
-                        }}
-                      >
-                        Nghe trên Spotify
-                      </Button>
-                    )}
-                    {(album as any).youtubeUrl && (
-                      <Button
-                        href={(album as any).youtubeUrl}
-                        target="_blank"
-                        rel="noopener"
-                        variant="outlined"
-                        size="large"
-                        startIcon={<YouTubeIcon />}
-                        sx={{
-                          borderRadius: '12px',
-                          px: 4,
-                          py: 1.5,
-                          fontWeight: 700,
-                          textTransform: 'none',
-                          borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+                          fontWeight: 800,
+                          fontFamily: '"Outfit", "Inter", sans-serif',
                           color: 'text.primary',
-                          '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(255,45,85,0.05)' }
+                          mb: 1.5
                         }}
                       >
-                        Xem trên YouTube
-                      </Button>
-                    )}
-                  </Stack>
+                        Thưởng thức đĩa đơn này
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          lineHeight: 1.7,
+                          mb: 4,
+                          fontFamily: '"Inter", sans-serif'
+                        }}
+                      >
+                        {album.description || 'Đĩa đơn chính thức đầy cảm xúc từ NC Huynh. Lắng nghe trọn vẹn giai điệu và ca từ của tác phẩm trên các nền tảng phát nhạc trực tuyến.'}
+                      </Typography>
+
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                        {album.spotifyUrl && (
+                          <Button
+                            href={album.spotifyUrl}
+                            target="_blank"
+                            rel="noopener"
+                            variant="contained"
+                            size="large"
+                            startIcon={<PlayArrowIcon />}
+                            sx={{
+                              borderRadius: '12px',
+                              px: 4,
+                              py: 1.8,
+                              fontWeight: 800,
+                              textTransform: 'none',
+                              bgcolor: '#1DB954',
+                              boxShadow: '0 8px 25px rgba(29, 185, 84, 0.25)',
+                              '&:hover': { bgcolor: '#1ed760', boxShadow: '0 12px 30px rgba(29, 185, 84, 0.4)' }
+                            }}
+                          >
+                            Nghe trên Spotify
+                          </Button>
+                        )}
+                        {album.youtubeUrl && (
+                          <Button
+                            href={album.youtubeUrl}
+                            target="_blank"
+                            rel="noopener"
+                            variant="outlined"
+                            size="large"
+                            startIcon={<YouTubeIcon />}
+                            sx={{
+                              borderRadius: '12px',
+                              px: 4,
+                              py: 1.8,
+                              fontWeight: 800,
+                              textTransform: 'none',
+                              borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+                              color: 'text.primary',
+                              '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(255,45,85,0.05)' }
+                            }}
+                          >
+                            Xem trên YouTube
+                          </Button>
+                        )}
+                      </Stack>
+                    </Paper>
+                  ) : (
+                    <>
+                      <Box sx={{ mb: 4 }}>
+                        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 1.5 }}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 800, fontFamily: '"Outfit", "Inter", sans-serif', color: 'text.primary' }}>
+                            Danh sách bài hát
+                          </Typography>
+                          <Divider sx={{ flexGrow: 1, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }} />
+                        </Stack>
+                        <Box sx={{
+                          maxHeight: 300,
+                          overflowY: 'auto',
+                          pr: 1,
+                          '&::-webkit-scrollbar': { width: '4px' },
+                          '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
+                          '&::-webkit-scrollbar-thumb': { bgcolor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderRadius: 2 }
+                        }}>
+                          <TrackList tracks={album.tracks ?? []} albumTitle={album.title} albumType={album.type} />
+                        </Box>
+                      </Box>
+
+                      <Stack direction="row" spacing={2}>
+                        {album.spotifyUrl && (
+                          <Button
+                            href={album.spotifyUrl}
+                            target="_blank"
+                            rel="noopener"
+                            variant="contained"
+                            size="large"
+                            startIcon={<PlayArrowIcon />}
+                            sx={{
+                              borderRadius: '12px',
+                              px: 4,
+                              py: 1.5,
+                              fontWeight: 700,
+                              textTransform: 'none',
+                              bgcolor: '#1DB954',
+                              boxShadow: '0 8px 20px rgba(29, 185, 84, 0.3)',
+                              '&:hover': { bgcolor: '#1ed760', boxShadow: '0 10px 25px rgba(29, 185, 84, 0.4)' }
+                            }}
+                          >
+                            Nghe trên Spotify
+                          </Button>
+                        )}
+                        {album.youtubeUrl && (
+                          <Button
+                            href={album.youtubeUrl}
+                            target="_blank"
+                            rel="noopener"
+                            variant="outlined"
+                            size="large"
+                            startIcon={<YouTubeIcon />}
+                            sx={{
+                              borderRadius: '12px',
+                              px: 4,
+                              py: 1.5,
+                              fontWeight: 700,
+                              textTransform: 'none',
+                              borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+                              color: 'text.primary',
+                              '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(255,45,85,0.05)' }
+                            }}
+                          >
+                            Xem trên YouTube
+                          </Button>
+                        )}
+                      </Stack>
+                    </>
+                  )}
                 </Box>
               </Grid>
             </Grid>

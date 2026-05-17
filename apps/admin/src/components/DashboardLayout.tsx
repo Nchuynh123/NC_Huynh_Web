@@ -92,7 +92,7 @@ export function DashboardLayout() {
             </IconButton>
           )}
           <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 700 }}>
-            NC Huynh Band — Admin
+            NC Huynh — Admin
           </Typography>
           <ThemeToggle />
         </Toolbar>

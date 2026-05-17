@@ -24,7 +24,7 @@ export function AlbumCard({ album }: { album: Album }) {
         '&:hover': {
           bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,1)',
           borderColor: 'primary.main',
-          boxShadow: isDark 
+          boxShadow: isDark
             ? '0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,45,85,0.1)'
             : '0 20px 40px rgba(0,0,0,0.08), 0 0 20px rgba(255,45,85,0.05)',
           '& .album-img': {
@@ -60,13 +60,13 @@ export function AlbumCard({ album }: { album: Album }) {
               </Typography>
             )}
           </Box>
-          
-          <Box 
+
+          <Box
             className="album-overlay"
             sx={{
               position: 'absolute',
               inset: 0,
-              background: isDark 
+              background: isDark
                 ? 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%)'
                 : 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 60%)',
               opacity: 0.8,
@@ -81,10 +81,10 @@ export function AlbumCard({ album }: { album: Album }) {
               right: 15,
             }}
           >
-            <Chip 
-              label={album.type} 
-              size="small" 
-              sx={{ 
+            <Chip
+              label={album.type}
+              size="small"
+              sx={{
                 bgcolor: 'primary.main',
                 color: 'white',
                 fontWeight: 800,
@@ -93,7 +93,7 @@ export function AlbumCard({ album }: { album: Album }) {
                 borderRadius: '6px',
                 backdropFilter: 'blur(10px)',
                 boxShadow: isDark ? '0 4px 10px rgba(255,45,85,0.3)' : '0 4px 10px rgba(255,45,85,0.2)'
-              }} 
+              }}
             />
           </Box>
 
@@ -119,9 +119,9 @@ export function AlbumCard({ album }: { album: Album }) {
               {album.title}
             </Typography>
             {album.releaseDate && (
-              <Typography 
-                variant="caption" 
-                sx={{ 
+              <Typography
+                variant="caption"
+                sx={{
                   color: 'rgba(255,255,255,0.8)',
                   fontWeight: 600,
                   letterSpacing: '0.1em'

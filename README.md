@@ -1,4 +1,4 @@
-# NC Huynh Band — Website fullstack
+# NC Huynh — Website fullstack
 
 Monorepo: public site, admin CMS, Express API, Supabase (PostgreSQL + Auth + Storage).
 

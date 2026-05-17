@@ -1,4 +1,9 @@
-import { Container, Skeleton, Box, Typography, Grid, useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Skeleton from '@mui/material/Skeleton';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGallery } from '../api/client';
 import { GalleryGrid } from '../components/GalleryGrid';
@@ -15,11 +20,11 @@ export function GalleryPage() {
         <Box sx={{ mb: 6, textAlign: 'center' }}>
           <Typography
             variant="overline"
-            sx={{ 
-              color: 'primary.main', 
-              fontWeight: 800, 
-              letterSpacing: '0.4em', 
-              display: 'block', 
+            sx={{
+              color: 'primary.main',
+              fontWeight: 800,
+              letterSpacing: '0.4em',
+              display: 'block',
               mb: 1,
               fontSize: '0.75rem'
             }}
@@ -32,7 +37,7 @@ export function GalleryPage() {
               fontWeight: 900,
               fontFamily: '"Outfit", "Inter", sans-serif',
               color: 'text.primary',
-              background: isDark 
+              background: isDark
                 ? 'linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.4) 100%)'
                 : 'linear-gradient(to bottom, #121212 0%, rgba(18,18,18,0.5) 100%)',
               WebkitBackgroundClip: 'text',
@@ -57,7 +62,7 @@ export function GalleryPage() {
               opacity: 0.8
             }}
           >
-            Những khoảnh khắc chân thực, những thước phim đầy cảm xúc từ hành trình âm nhạc của NC Huynh Band.
+            Những khoảnh khắc chân thực, những thước phim đầy cảm xúc từ hành trình âm nhạc của NC Huynh.
           </Typography>
         </Box>
 
@@ -65,13 +70,13 @@ export function GalleryPage() {
           <Grid container spacing={3}>
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Grid item xs={12} sm={6} md={4} key={i}>
-                <Skeleton 
-                  variant="rounded" 
-                  height={300} 
-                  sx={{ 
-                    borderRadius: 4, 
-                    bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' 
-                  }} 
+                <Skeleton
+                  variant="rounded"
+                  height={300}
+                  sx={{
+                    borderRadius: 4,
+                    bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'
+                  }}
                 />
               </Grid>
             ))}

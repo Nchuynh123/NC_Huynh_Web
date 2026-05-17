@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
   AppBar,
@@ -12,6 +12,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  keyframes,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
@@ -27,9 +28,14 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
-import { fetchSettings } from '../api/client';
+import { fetchSettings, fetchAlbums } from '../api/client';
 import { Footer } from './Footer';
 import ThemeToggle from './ThemeToggle';
+
+const visualizerBounce = keyframes`
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+`;
 
 const nav = [
   { label: 'Trang chủ', path: '/' },
@@ -48,6 +54,110 @@ export function Layout() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: fetchSettings });
+  const { data: albums } = useQuery({ queryKey: ['albums'], queryFn: fetchAlbums });
+
+  // Dynamically update browser tab favicon based on custom site settings logo
+  useEffect(() => {
+    const logoUrl = settings?.logoUrl;
+    if (logoUrl) {
+      let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      link.href = logoUrl;
+    }
+  }, [settings]);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  // Initial ambient soundtrack setup with autoplay on first interaction
+  useEffect(() => {
+    const defaultUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3';
+    const audio = new Audio(defaultUrl);
+    audio.loop = true;
+    audio.volume = 0.25;
+    audio.muted = true; // Start muted to bypass browser autoplay blocks completely!
+    audioRef.current = audio;
+
+    // Start playing immediately (always succeeds because the audio is muted!)
+    audio.play()
+      .then(() => {
+        setIsPlaying(true);
+      })
+      .catch((err) => {
+        console.log("Muted autoplay blocked:", err);
+      });
+
+    // Unmute as soon as the user interacts with the page
+    const unmuteOnInteraction = () => {
+      if (audioRef.current) {
+        audioRef.current.muted = false;
+        audioRef.current.volume = 0.25;
+        // Double check it's playing
+        if (audioRef.current.paused && isPlaying) {
+          audioRef.current.play().catch(err => console.log("Failed to play on interaction:", err));
+        }
+        cleanupListeners();
+      }
+    };
+
+    const cleanupListeners = () => {
+      document.removeEventListener('click', unmuteOnInteraction);
+      document.removeEventListener('touchstart', unmuteOnInteraction);
+      document.removeEventListener('scroll', unmuteOnInteraction);
+    };
+
+    document.addEventListener('click', unmuteOnInteraction);
+    document.addEventListener('touchstart', unmuteOnInteraction);
+    document.addEventListener('scroll', unmuteOnInteraction);
+
+    return () => {
+      cleanupListeners();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // Sync background music URL with the first custom track having a valid audioUrl
+  useEffect(() => {
+    if (!albums || !audioRef.current) return;
+
+    let customUrl = '';
+    for (const album of albums) {
+      if (album.tracks) {
+        const trackWithAudio = album.tracks.find(t => t.audioUrl);
+        if (trackWithAudio && trackWithAudio.audioUrl) {
+          customUrl = trackWithAudio.audioUrl;
+          break;
+        }
+      }
+    }
+
+    if (customUrl && audioRef.current.src !== customUrl) {
+      const wasPlaying = isPlaying;
+      audioRef.current.src = customUrl;
+      if (wasPlaying) {
+        audioRef.current.play().catch(err => console.log("Failed to resume custom track:", err));
+      }
+    }
+  }, [albums]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch(err => console.log("Failed to play soundtrack:", err));
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,7 +167,7 @@ export function Layout() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const bandName = settings?.bandName ?? 'NC Huynh Band';
+  const bandName = settings?.bandName ?? 'NC Huynh';
 
   const navIcons: Record<string, any> = {
     '/': <HomeIcon fontSize="small" />,
@@ -85,7 +195,7 @@ export function Layout() {
       {/* Drawer Header */}
       <Box sx={{ p: 4, borderBottom: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
         <Typography variant="h6" sx={{ fontWeight: 900, fontFamily: '"Outfit", "Inter", sans-serif', letterSpacing: '0.1em' }}>
-          NC HUYNH <Box component="span" sx={{ color: 'primary.main' }}>BAND</Box>
+          <Box component="span" sx={{ color: 'primary.main' }}>NC</Box> HUYNH
         </Typography>
       </Box>
 
@@ -207,14 +317,14 @@ export function Layout() {
         position="fixed"
         elevation={0}
         sx={{
-          bgcolor: scrolled 
-            ? (isDark ? 'rgba(10,10,10,0.85)' : 'rgba(255,255,255,0.85)') 
+          bgcolor: scrolled
+            ? (isDark ? 'rgba(10,10,10,0.85)' : 'rgba(255,255,255,0.85)')
             : 'transparent',
           height: { xs: 60, md: 65 },
           backdropFilter: scrolled ? 'blur(20px)' : 'none',
           color: 'text.primary',
-          borderBottom: scrolled 
-            ? (isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.05)') 
+          borderBottom: scrolled
+            ? (isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.05)')
             : '1px solid transparent',
           zIndex: 1100,
           display: 'flex',
@@ -239,13 +349,13 @@ export function Layout() {
                   component="img"
                   src={settings.logoUrl}
                   alt={bandName}
-                  sx={{ 
-                    height: { xs: 30, md: 40 }, 
-                    width: 'auto', 
-                    objectFit: 'contain', 
-                    transition: 'transform 0.3s ease', 
+                  sx={{
+                    height: { xs: 30, md: 40 },
+                    width: 'auto',
+                    objectFit: 'contain',
+                    transition: 'transform 0.3s ease',
                     filter: isDark ? 'none' : 'invert(0.1)',
-                    '&:hover': { transform: 'scale(1.05)' } 
+                    '&:hover': { transform: 'scale(1.05)' }
                   }}
                 />
               ) : (
@@ -305,11 +415,65 @@ export function Layout() {
             </Stack>
           )}
 
-          {!mobile && (
-            <Box sx={{ width: 45, display: 'flex', justifyContent: 'flex-end' }}>
-              <ThemeToggle />
-            </Box>
-          )}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {/* Beautiful Bouncing Audio Visualizer Button */}
+            <IconButton
+              onClick={togglePlay}
+              size="small"
+              sx={{
+                color: isPlaying ? 'primary.main' : 'text.secondary',
+                bgcolor: isPlaying ? 'rgba(255,45,85,0.06)' : 'transparent',
+                border: '1px solid',
+                borderColor: isPlaying ? 'rgba(255,45,85,0.15)' : 'rgba(255,255,255,0.08)',
+                borderRadius: '50%',
+                p: 1,
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  bgcolor: isPlaying ? 'rgba(255,45,85,0.12)' : 'rgba(255,255,255,0.05)',
+                  transform: 'scale(1.05)',
+                }
+              }}
+              title={isPlaying ? "Tắt nhạc nền" : "Bật nhạc nền"}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: 16, width: 16 }}>
+                <Box
+                  sx={{
+                    width: 3,
+                    bgcolor: 'currentcolor',
+                    borderRadius: '2px',
+                    height: isPlaying ? '100%' : '4px',
+                    animation: isPlaying ? `${visualizerBounce} 0.8s ease-in-out infinite` : 'none',
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 3,
+                    bgcolor: 'currentcolor',
+                    borderRadius: '2px',
+                    height: isPlaying ? '100%' : '6px',
+                    animation: isPlaying ? `${visualizerBounce} 0.5s ease-in-out infinite` : 'none',
+                    animationDelay: '0.15s',
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 3,
+                    bgcolor: 'currentcolor',
+                    borderRadius: '2px',
+                    height: isPlaying ? '100%' : '3px',
+                    animation: isPlaying ? `${visualizerBounce} 0.7s ease-in-out infinite` : 'none',
+                    animationDelay: '0.3s',
+                  }}
+                />
+              </Box>
+            </IconButton>
+
+            {!mobile && (
+              <Box sx={{ width: 45, display: 'flex', justifyContent: 'flex-end' }}>
+                <ThemeToggle />
+              </Box>
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
 

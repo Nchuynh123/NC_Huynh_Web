@@ -1,4 +1,10 @@
-import { Container, Stack, Typography, Box, Paper, IconButton, useTheme } from '@mui/material';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSettings } from '../api/client';
 import { ContactForm } from '../components/ContactForm';
@@ -37,7 +43,7 @@ export function ContactPage() {
               fontWeight: 900,
               fontFamily: '"Outfit", "Inter", sans-serif',
               color: 'text.primary',
-              background: isDark 
+              background: isDark
                 ? 'linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.4) 100%)'
                 : 'linear-gradient(to bottom, #121212 0%, rgba(18,18,18,0.5) 100%)',
               WebkitBackgroundClip: 'text',
@@ -62,7 +68,7 @@ export function ContactPage() {
               opacity: 0.8
             }}
           >
-            Booking, hợp tác dự án hoặc đơn giản là gửi một lời nhắn yêu thương đến NC Huynh Band.
+            Booking, hợp tác dự án hoặc đơn giản là gửi một lời nhắn yêu thương đến NC Huynh.
           </Typography>
         </Box>
 

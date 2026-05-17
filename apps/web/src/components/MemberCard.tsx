@@ -1,11 +1,13 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography, CardActionArea } from '@mui/material';
+import { Link } from 'react-router-dom';
 import type { Member } from '@band/shared';
-
+import { slugify } from '@band/shared';
 import { useTheme } from '@mui/material/styles';
 
 export function MemberCard({ member }: { member: Member }) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
+  const slug = slugify(member.name);
 
   return (
     <Paper
@@ -37,89 +39,91 @@ export function MemberCard({ member }: { member: Member }) {
         }
       }}
     >
-      {/* Image Section */}
-      <Box sx={{ height: 320, overflow: 'hidden', position: 'relative' }}>
-        <img
-          className="member-img"
-          src={member.photoUrl ?? '/placeholder-member.jpg'}
-          alt={member.name}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center top',
-            transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        />
-        <Box
-          className="member-overlay"
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            background: isDark 
-              ? 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%)'
-              : 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 60%)',
-            transition: 'all 0.4s ease'
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 20,
-            left: 20,
-            right: 20,
-          }}
-        >
-          <Typography
-            variant="h5"
+      <CardActionArea component={Link} to={`/members/${slug}`} sx={{ height: '100%', display: 'block' }}>
+        {/* Image Section */}
+        <Box sx={{ height: 320, overflow: 'hidden', position: 'relative' }}>
+          <img
+            className="member-img"
+            src={member.photoUrl ?? '/placeholder-member.jpg'}
+            alt={member.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
+          <Box
+            className="member-overlay"
             sx={{
-              fontWeight: 900,
-              fontFamily: '"Outfit", "Inter", sans-serif',
-              color: 'white',
-              mb: 0.5,
-              textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : '0 1px 5px rgba(0,0,0,0.3)'
+              position: 'absolute',
+              inset: 0,
+              background: isDark 
+                ? 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%)'
+                : 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 60%)',
+              transition: 'all 0.4s ease'
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 20,
+              left: 20,
+              right: 20,
             }}
           >
-            {member.name}
-          </Typography>
-          <Typography
-            variant="overline"
-            sx={{
-              color: 'primary.main',
-              fontWeight: 800,
-              letterSpacing: '0.25em',
-              lineHeight: 1.2,
-              display: 'block',
-              textShadow: isDark ? '0 2px 8px rgba(255,45,85,0.4)' : 'none',
-              fontSize: '0.65rem'
-            }}
-          >
-            {member.role}
-          </Typography>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 900,
+                fontFamily: '"Outfit", "Inter", sans-serif',
+                color: 'white',
+                mb: 0.5,
+                textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : '0 1px 5px rgba(0,0,0,0.3)'
+              }}
+            >
+              {member.name}
+            </Typography>
+            <Typography
+              variant="overline"
+              sx={{
+                color: 'primary.main',
+                fontWeight: 800,
+                letterSpacing: '0.25em',
+                lineHeight: 1.2,
+                display: 'block',
+                textShadow: isDark ? '0 2px 8px rgba(255,45,85,0.4)' : 'none',
+                fontSize: '0.65rem'
+              }}
+            >
+              {member.role}
+            </Typography>
+          </Box>
         </Box>
-      </Box>
 
-      {/* Content Section */}
-      <Box sx={{ p: 2.5, textAlign: 'center' }}>
-        {member.bio && (
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'text.secondary',
-              lineHeight: 1.7,
-              fontSize: '0.88rem',
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              fontFamily: '"Outfit", "Inter", sans-serif',
-              fontWeight: 500
-            }}
-          >
-            {member.bio}
-          </Typography>
-        )}
-      </Box>
+        {/* Content Section */}
+        <Box sx={{ p: 2.5, textAlign: 'center' }}>
+          {member.bio && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                lineHeight: 1.7,
+                fontSize: '0.88rem',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                fontFamily: '"Outfit", "Inter", sans-serif',
+                fontWeight: 500
+              }}
+            >
+              {member.bio}
+            </Typography>
+          )}
+        </Box>
+      </CardActionArea>
     </Paper>
   );
 }

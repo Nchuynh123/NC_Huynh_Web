@@ -6,8 +6,8 @@ import type { Event } from '@band/shared';
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('vi-VN', {
     weekday: 'short',
-    day: 'numeric',
-    month: 'long',
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
   });
 }
@@ -116,10 +116,10 @@ export function EventTimeline({ events, past }: { events: Event[]; past?: boolea
                   {ev.title}
                 </Typography>
 
-                <Stack direction="row" spacing={3} alignItems="center">
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 3 }} alignItems={{ xs: 'flex-start', sm: 'center' }}>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <EventIcon sx={{ fontSize: '1rem', color: 'primary.main' }} />
-                    <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: '"Inter", sans-serif', color: 'text.secondary', fontSize: '0.8rem' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: '"Inter", sans-serif', color: 'text.secondary', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
                       {formatDate(ev.eventDate)}
                     </Typography>
                   </Stack>

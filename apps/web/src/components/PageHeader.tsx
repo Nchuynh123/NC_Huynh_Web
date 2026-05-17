@@ -5,17 +5,17 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: stri
   return (
     <>
       <Helmet>
-        <title>{title} — NC Huynh Band</title>
+        <title>{title} — NC Huynh</title>
       </Helmet>
       <Box sx={{ py: { xs: 3, md: 4 }, bgcolor: 'background.paper' }}>
         <Container maxWidth="lg">
-          <Typography 
-            variant="h3" 
-            sx={{ 
-              fontFamily: '"Outfit", sans-serif', 
-              fontWeight: 800, 
-              fontSize: { xs: '2rem', md: '2.5rem' } 
-            }} 
+          <Typography
+            variant="h3"
+            sx={{
+              fontFamily: '"Outfit", sans-serif',
+              fontWeight: 800,
+              fontSize: { xs: '2rem', md: '2.5rem' }
+            }}
             gutterBottom
           >
             {title}

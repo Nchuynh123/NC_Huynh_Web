@@ -7,10 +7,10 @@ async function main() {
     where: { id: 'default' },
     create: {
       id: 'default',
-      bandName: 'NC Huynh Band',
+      bandName: 'NC Huynh',
       tagline: 'Âm nhạc từ trái tim',
       about:
-        'NC Huynh Band là ban nhạc độc lập, mang đến những giai điệu đầy cảm xúc. Chúng tôi kết hợp rock, indie và acoustic để tạo nên âm thanh riêng biệt.',
+        'NC Huynh là ban nhạc độc lập, mang đến những giai điệu đầy cảm xúc. Chúng tôi kết hợp rock, indie và acoustic để tạo nên âm thanh riêng biệt.',
       socialLinks: {
         spotify: 'https://open.spotify.com',
         youtube: 'https://youtube.com',

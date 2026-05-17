@@ -1,4 +1,9 @@
-import { Container, Grid, Skeleton, Box, Typography, useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Skeleton from '@mui/material/Skeleton';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAlbums } from '../api/client';
 import { AlbumCard } from '../components/AlbumCard';

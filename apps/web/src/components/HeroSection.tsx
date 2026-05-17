@@ -11,6 +11,11 @@ const scroll = keyframes`
   100% { transform: translateY(-50%); }
 `;
 
+const scrollHorizontal = keyframes`
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+`;
+
 const pulse = keyframes`
   0% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.1); }
@@ -45,6 +50,18 @@ const drawText = (isDark: boolean) => keyframes`
   }
 `;
 
+interface MappedTrack {
+  id: string;
+  title: string;
+  trackNo: number;
+  albumTitle: string;
+  albumType: string;
+  albumSlug: string;
+  albumId?: string;
+  audioUrl?: string | null;
+  duration?: string | null;
+}
+
 interface HeroSectionProps {
   settings?: SiteSettings;
 }
@@ -57,14 +74,27 @@ export function HeroSection({ settings }: HeroSectionProps) {
   const { data: albums } = useQuery({ queryKey: ['albums'], queryFn: fetchAlbums });
 
   // Map all tracks and include parent album info
-  const allTracks = albums?.flatMap(album =>
-    (album.tracks || []).map(track => ({
+  const allTracks = (albums?.flatMap((album): MappedTrack[] => {
+    if (album.type === 'SINGLE') {
+      return [{
+        id: album.id,
+        title: album.title,
+        trackNo: 1,
+        albumTitle: 'Single',
+        albumType: album.type,
+        albumSlug: album.slug,
+        albumId: album.id,
+        duration: null,
+        audioUrl: null
+      }];
+    }
+    return (album.tracks || []).map(track => ({
       ...track,
       albumTitle: album.title,
       albumType: album.type,
       albumSlug: album.slug
-    }))
-  ) || [];
+    }));
+  }) || []) as MappedTrack[];
 
   // Duplicate for seamless loop if enough tracks
   const displayTracks = allTracks.length > 0 ? [...allTracks, ...allTracks] : [];
@@ -78,19 +108,19 @@ export function HeroSection({ settings }: HeroSectionProps) {
         alignItems: 'center',
         overflow: 'hidden',
         backgroundImage: heroUrl
-          ? (isDark 
-              ? `linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.9) 100%), url(${heroUrl})`
-              : `linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.85) 100%), url(${heroUrl})`)
-          : (isDark 
-              ? 'linear-gradient(135deg, #1a0a0a 0%, #0a0a0a 50%, #1a1208 100%)'
-              : 'linear-gradient(135deg, #fdfdfd 0%, #f5f5f5 50%, #fafafa 100%)'),
+          ? (isDark
+            ? `linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.9) 100%), url(${heroUrl})`
+            : `linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.85) 100%), url(${heroUrl})`)
+          : (isDark
+            ? 'linear-gradient(135deg, #1a0a0a 0%, #0a0a0a 50%, #1a1208 100%)'
+            : 'linear-gradient(135deg, #fdfdfd 0%, #f5f5f5 50%, #fafafa 100%)'),
         backgroundSize: 'cover',
         backgroundPosition: 'center 15%',
       }}
     >
       <Container maxWidth="lg">
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} alignItems="center" justifyContent="space-between">
-          <Stack spacing={2} maxWidth={600} sx={{ zIndex: 2 }}>
+          <Stack spacing={2} maxWidth={600} sx={{ zIndex: 2, alignItems: { xs: 'center', md: 'flex-start' } }}>
             <Typography
               variant="h1"
               component="div"
@@ -101,6 +131,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
                 fontFamily: '"Outfit", "Inter", sans-serif',
                 display: 'flex',
                 flexWrap: 'wrap',
+                justifyContent: { xs: 'center', md: 'flex-start' },
                 gap: { xs: 1, md: 0 },
               }}
             >
@@ -121,58 +152,125 @@ export function HeroSection({ settings }: HeroSectionProps) {
                 </Box>
               ))}
             </Typography>
-            <Typography variant="h5" sx={{ color: 'text.secondary', maxWidth: 500, fontWeight: 500, display: { xs: 'none', md: 'block' } }}>
+            <Typography
+              variant="h5"
+              sx={{
+                color: isDark ? 'rgba(255, 255, 255, 0.85)' : 'text.secondary',
+                maxWidth: { xs: 260, md: 500 },
+                fontWeight: 500,
+                fontSize: { xs: '0.85rem', md: '1.25rem' },
+                textAlign: { xs: 'center', md: 'left' },
+                lineHeight: 1.5,
+                textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
+                px: { xs: 1, md: 0 },
+                opacity: 0.9
+              }}
+            >
               {settings?.tagline ?? 'NC Huynh những người chơi nhạc đến từ Quảng Ngãi'}
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: { xs: 2, md: 4 } }}>
-              <Button
-                component={Link}
-                to="/about"
-                variant="contained"
-                size="large"
-                sx={{
-                  borderRadius: 5,
-                  bgcolor: 'primary.main',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  px: 4,
-                  boxShadow: '0 8px 20px rgba(230, 57, 70, 0.3)',
-                  '&:hover': {
-                    bgcolor: 'primary.dark',
-                    transform: 'translateY(-1px)',
-                    boxShadow: '0 12px 25px rgba(230, 57, 70, 0.4)',
-                  },
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-              >
-                Giới Thiệu
-              </Button>
-              <Button
-                component={Link}
-                to="/music"
-                variant="outlined"
-                size="large"
-                sx={{
-                  borderRadius: 5,
-                  color: 'text.primary',
-                  borderColor: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)',
-                  backdropFilter: 'blur(8px)',
-                  bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  px: 4,
-                  '&:hover': {
-                    borderColor: 'primary.main',
-                    bgcolor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.05)',
-                    transform: 'translateY(-1px)',
-                  },
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-              >
-                Âm nhạc
-              </Button>
-            </Stack>
+
           </Stack>
+
+          {/* Running Track List for Mobile (Horizontal Marquee) - Sibling to avoid layout width warping */}
+          {displayTracks.length > 0 && (
+            <Box
+              sx={{
+                width: '100%',
+                overflow: 'hidden',
+                position: 'relative',
+                py: 1,
+                maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+                zIndex: 1,
+                mt: 3,
+                display: { xs: 'block', md: 'none' }
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  width: 'max-content',
+                  animation: `${scrollHorizontal} ${displayTracks.length * 2.5}s linear infinite`,
+                  '&:hover': { animationPlayState: 'paused' },
+                }}
+              >
+                {displayTracks.map((track, i) => (
+                  <Box
+                    key={`${track.id}-horiz-${i}`}
+                    component={Link}
+                    to={`/music/${track.albumSlug}`}
+                    sx={{
+                      p: 1.5,
+                      borderRadius: '12px',
+                      bgcolor: 'transparent',
+                      border: '1px solid',
+                      borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minWidth: 160,
+                      maxWidth: 200,
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '@keyframes glassShine': {
+                        '0%': { left: '-150%' },
+                        '30%': { left: '-150%' },
+                        '70%': { left: '150%' },
+                        '100%': { left: '150%' }
+                      },
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-150%',
+                        width: '150%',
+                        height: '100%',
+                        background: isDark
+                          ? 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.22), transparent)'
+                          : 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4), transparent)',
+                        transform: 'skewX(-25deg)',
+                        zIndex: 9,
+                        pointerEvents: 'none',
+                        animation: 'glassShine 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite',
+                        animationDelay: `${(i % 4) * 1.5}s`,
+                      },
+                      '&:hover': {
+                        bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.15)',
+                        borderColor: 'primary.main',
+                        transform: 'translateY(-2px)',
+                        boxShadow: isDark
+                          ? '0 12px 30px rgba(255,45,85,0.15)'
+                          : '0 12px 30px rgba(255,45,85,0.08)',
+                      }
+                    }}
+                  >
+                    <MusicNoteIcon sx={{ color: 'primary.main', fontSize: '1rem' }} />
+                    <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.primary',
+                          fontWeight: 700,
+                          fontFamily: '"Outfit", sans-serif',
+                          display: 'block',
+                          lineHeight: 1.2
+                        }}
+                        noWrap
+                      >
+                        {track.title}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.65rem', display: 'block' }} noWrap>
+                        {track.albumTitle}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
 
           {/* Animated Track List */}
           {!isMobile && displayTracks.length > 0 && (
@@ -200,38 +298,74 @@ export function HeroSection({ settings }: HeroSectionProps) {
                     key={`${track.id}-${i}`}
                     sx={{
                       p: 2,
-                      borderRadius: 3,
-                      bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.8)',
-                      backdropFilter: 'blur(16px)',
-                      border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.05)',
+                      borderRadius: '16px',
+                      bgcolor: 'transparent',
+                      border: '1px solid',
+                      borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 2,
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       cursor: 'pointer',
-                      boxShadow: isDark ? 'none' : '0 4px 15px rgba(0,0,0,0.03)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '@keyframes glassShine': {
+                        '0%': { left: '-150%' },
+                        '30%': { left: '-150%' },
+                        '70%': { left: '150%' },
+                        '100%': { left: '150%' }
+                      },
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-150%',
+                        width: '150%',
+                        height: '100%',
+                        background: isDark
+                          ? 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.22), transparent)'
+                          : 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4), transparent)',
+                        transform: 'skewX(-25deg)',
+                        zIndex: 9,
+                        pointerEvents: 'none',
+                        animation: 'glassShine 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite',
+                        animationDelay: `${(i % 4) * 1.5}s`,
+                      },
                       '&:hover': {
-                        bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,1)',
+                        bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.15)',
                         borderColor: 'primary.main',
-                        boxShadow: isDark ? '0 10px 30px rgba(0,0,0,0.3)' : '0 10px 30px rgba(0,0,0,0.08)',
-                        '& .track-arrow': { transform: 'translateX(3px)', color: 'primary.main' }
+                        transform: 'translateY(-2px)',
+                        boxShadow: isDark
+                          ? '0 12px 30px rgba(255,45,85,0.15)'
+                          : '0 12px 30px rgba(255,45,85,0.08)',
+                        '& .track-icon-box': {
+                          bgcolor: 'primary.main',
+                          '& .track-icon': {
+                            color: 'white',
+                            transform: 'scale(1.1)'
+                          }
+                        },
+                        '& .track-arrow': { transform: 'translateX(3px)', color: 'primary.main', opacity: 1 }
                       }
                     }}
                   >
                     <Box
+                      className="track-icon-box"
                       sx={{
                         width: 38,
                         height: 38,
-                        borderRadius: 2,
-                        bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
+                        borderRadius: '10px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.05)'
+                        bgcolor: 'transparent',
+                        border: '1px solid',
+                        borderColor: 'transparent',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
-                      <MusicNoteIcon sx={{ color: 'primary.main', fontSize: '1.1rem', animation: `${pulse} 2s infinite ease-in-out` }} />
+                      <MusicNoteIcon className="track-icon" sx={{ color: 'primary.main', fontSize: '1.1rem', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', animation: `${pulse} 2s infinite ease-in-out` }} />
                     </Box>
 
                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>

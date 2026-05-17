@@ -1,4 +1,12 @@
-import { Container, Grid, Box, Typography, Stack, Paper, Skeleton, Divider, useTheme } from '@mui/material';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Paper from '@mui/material/Paper';
+import Skeleton from '@mui/material/Skeleton';
+import Divider from '@mui/material/Divider';
+import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSettings, fetchEvents, fetchMembers, fetchAlbums } from '../api/client';
 import type { Event } from '@band/shared';
@@ -62,7 +70,7 @@ export function AboutPage() {
                       variant="overline"
                       sx={{ color: 'primary.main', fontWeight: 700, letterSpacing: '0.25em', mb: 1, display: 'block', fontSize: '0.65rem' }}
                     >
-                      EST. 2017
+                      EST. 2024
                     </Typography>
                     <Typography
                       variant="h3"
@@ -125,7 +133,7 @@ export function AboutPage() {
                     }}>
                       <img
                         src={settings?.heroImageUrl ?? '/placeholder-band.jpg'}
-                        alt="NC Huynh Band"
+                        alt="NC Huynh"
                         style={{
                           width: '100%',
                           height: '100%',
@@ -300,8 +308,8 @@ export function AboutPage() {
                             border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.05)'
                           }}
                         >
-                          <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 600 }}>
-                            {new Date(event.eventDate).toLocaleDateString('vi-VN')}
+                          <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                            {new Date(event.eventDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                           </Typography>
                         </Box>
                       </Box>

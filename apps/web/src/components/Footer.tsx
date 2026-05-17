@@ -170,7 +170,7 @@ export function Footer({ settings }: FooterProps) {
 
         <Box sx={{ pt: 6, mt: 6, borderTop: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
           <Typography variant="caption" sx={{ color: 'text.secondary', opacity: 0.5, fontFamily: '"Inter", sans-serif', letterSpacing: '0.05em' }}>
-            © {year} {settings?.bandName ?? 'NC HUYNH BAND'}. All Rights Reserved.
+            © {year} {settings?.bandName ?? 'NC HUYNH'}. All Rights Reserved.
           </Typography>
         </Box>
       </Container>
